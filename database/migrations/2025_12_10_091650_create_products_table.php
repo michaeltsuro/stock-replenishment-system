@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->string('sku', 100)->unique();
+            $table->string('barcode', 100)->nullable();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['admin', 'manager', 'staff'])->default('staff');
+            $table->string('unit_of_measure', 50);
+            $table->integer('min_stock_level')->default(0);
             $table->timestamps();
             $table->softDeletes();
             
-            $table->index('email');
-            $table->index('role');
+            $table->index('category_id');
+            $table->index('sku');
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('products');
     }
 };

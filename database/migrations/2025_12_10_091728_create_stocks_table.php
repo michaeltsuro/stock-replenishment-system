@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['admin', 'manager', 'staff'])->default('staff');
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('location_id')->constrained()->cascadeOnDelete();
+            $table->decimal('quantity', 12, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
             
-            $table->index('email');
-            $table->index('role');
+            $table->unique(['product_id', 'location_id']);
+            $table->index('product_id');
+            $table->index('location_id');
         });
+
     }
 
     /**
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('stocks');
     }
 };
